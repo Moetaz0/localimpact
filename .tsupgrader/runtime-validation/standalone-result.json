@@ -1,0 +1,125 @@
+{
+  "planHash": "af089f48064f5f1cdbaf66371072c9303bac5839bafcd81ee6aa0ed312c03983",
+  "phase": "standalone",
+  "recordedAtUtc": "2026-11-11T15:49:28.2424987Z",
+  "retryCount": 3,
+  "resetBaseline": false,
+  "complete": true,
+  "result": {
+    "setupSucceeded": true,
+    "setupDurationMs": 46292,
+    "setupFailureOutput": null,
+    "assertions": [
+      {
+        "name": "lint",
+        "kind": "process",
+        "verificationMethod": "exit-code",
+        "passed": true,
+        "timedOut": false,
+        "skipped": false,
+        "skippedReason": null,
+        "exitCode": 0,
+        "outputSample": "\r\n\u003E localimpact@0.1.0 lint\r\n\u003E eslint\r\n\r\n",
+        "durationMs": 12920
+      },
+      {
+        "name": "tests-pass",
+        "kind": "process",
+        "verificationMethod": "test-results",
+        "passed": true,
+        "timedOut": false,
+        "skipped": false,
+        "skippedReason": null,
+        "exitCode": 0,
+        "outputSample": "\r\n\u003E localimpact@0.1.0 test\r\n\u003E vitest run\r\n\r\n\r\n RUN  v5.1.0 D:/studyTekup/react/project/localimpact\r\n\r\n\r\n Test Files  1 passed (1)\r\n      Tests  3 passed (3)\r\n   Start at  16:49:13\r\n   Duration  609ms (import 75%, transform 18%, tests 4%, worker 2%)\r\n\r\n",
+        "durationMs": 2355,
+        "testResults": {
+          "testFramework": "vitest",
+          "runnerDetectedFrom": "package_json",
+          "testsTotal": 3,
+          "testsPassed": 3,
+          "testsFailed": 0,
+          "testsSkipped": 0,
+          "parseFailed": false
+        }
+      },
+      {
+        "name": "auth-provider-route",
+        "kind": "http-probe",
+        "verificationMethod": "output-contains",
+        "passed": true,
+        "timedOut": false,
+        "skipped": false,
+        "skippedReason": null,
+        "exitCode": null,
+        "outputSample": "HTTP 200\n{\u0022credentials\u0022:{\u0022id\u0022:\u0022credentials\u0022,\u0022name\u0022:\u0022Credentials\u0022,\u0022type\u0022:\u0022credentials\u0022,\u0022signinUrl\u0022:\u0022http://localhost:3100/api/auth/signin/credentials\u0022,\u0022callbackUrl\u0022:\u0022http://localhost:3100/api/auth/callback/credentials\u0022}}\n--- server output ---\n\r\n\u003E localimpact@0.1.0 dev\r\n\u003E next dev --hostname 127.0.0.1 --port 3100\r\n\r\n\u25B2 Next.js 16.4.6 (Turbopack)\r\n- Local:         http://127.0.0.1:3100\r\n- Network:       http://127.0.0.1:3100\r\n- Environments: .env\r\n\u2713 Ready in 1345ms\r\n\u2713 Running next.config.ts took 64ms\r\n- Cache Components enabled\r\n- Partial Prefetching enabled\r\n\r\n  Turbopack has seen frequent file updates and is waiting for the filesystem to settle (0.5s elapsed so far; last modified: \u0022\\\\\\\\?\\\\D:\\\\studyTekup\\\\react\\\\project\\\\localimpact\\\\node_modules\\\\next\\\\dist\\\\server\\\\route-modules\u0022).\r\n  Turbopack has seen frequent file updates and is waiting for the filesystem to settle (1.5s elapsed so far; last modified: \u0022\\\\\\\\?\\\\D:\\\\studyTekup\\\\react\\\\project\\\\localimpact\\\\node_modules\\\\jose\\\\dist\\\\webapi\\\\jwk\u0022).\r\n\u25CB Compiling /api/auth/[...nextauth] ...\r\n  Turbopack has seen frequent file updates and is waiting for the filesystem to settle (0.5s elapsed so far; last modified: \u0022\\\\\\\\?\\\\D:\\\\studyTekup\\\\react\\\\project\\\\localimpact\\\\node_modules\\\\@swc\\\\helpers\u0022).\r\n GET /api/auth/providers 200 in 2.7s\r\n",
+        "durationMs": 13972
+      }
+    ],
+    "executions": [
+      {
+        "source": "setup[0]",
+        "resolvedExecutable": "C:\\Program Files\\nodejs\\npm.CMD",
+        "args": [
+          "ci"
+        ],
+        "cwd": "D:\\studyTekup\\react\\project\\localimpact",
+        "env": {},
+        "prependPath": [],
+        "platform": "win32"
+      },
+      {
+        "source": "setup[1]",
+        "resolvedExecutable": "C:\\Program Files\\nodejs\\npx.CMD",
+        "args": [
+          "prisma",
+          "generate"
+        ],
+        "cwd": "D:\\studyTekup\\react\\project\\localimpact",
+        "env": {},
+        "prependPath": [],
+        "platform": "win32"
+      },
+      {
+        "source": "lint",
+        "resolvedExecutable": "C:\\Program Files\\nodejs\\npm.CMD",
+        "args": [
+          "run",
+          "lint"
+        ],
+        "cwd": "D:\\studyTekup\\react\\project\\localimpact",
+        "env": {},
+        "prependPath": [],
+        "platform": "win32"
+      },
+      {
+        "source": "tests-pass",
+        "resolvedExecutable": "C:\\Program Files\\nodejs\\npm.CMD",
+        "args": [
+          "test"
+        ],
+        "cwd": "D:\\studyTekup\\react\\project\\localimpact",
+        "env": {},
+        "prependPath": [],
+        "platform": "win32"
+      },
+      {
+        "source": "auth-provider-route",
+        "resolvedExecutable": "C:\\Program Files\\nodejs\\npm.CMD",
+        "args": [
+          "run",
+          "dev",
+          "--",
+          "--hostname",
+          "127.0.0.1",
+          "--port",
+          "3100"
+        ],
+        "cwd": "D:\\studyTekup\\react\\project\\localimpact",
+        "env": {},
+        "prependPath": [],
+        "platform": "win32"
+      }
+    ]
+  }
+}
