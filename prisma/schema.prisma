@@ -1,0 +1,114 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  MANAGER
+  ADMIN
+}
+
+enum Status {
+  NEW
+  TAKEN
+  IN_PROGRESS
+  RESOLVED
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         Role     @default(USER)
+  createdAt    DateTime @default(now())
+
+  reports   Report[]        @relation("Author")
+  assigned  Report[]        @relation("Assignee")
+  supports  Support[]
+  comments  Comment[]
+  history   StatusHistory[]
+}
+
+model Category {
+  id      String   @id @default(cuid())
+  name    String   @unique
+  reports Report[]
+}
+
+model Location {
+  id      String   @id @default(cuid())
+  name    String   @unique
+  reports Report[]
+}
+
+model Report {
+  id             String    @id @default(cuid())
+  title          String
+  description    String
+  photoUrl       String?
+  status         Status    @default(NEW)
+  resolutionNote String?
+  resolvedAt     DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  categoryId String
+  locationId String
+  authorId   String
+  assigneeId String?
+
+  category Category @relation(fields: [categoryId], references: [id])
+  location Location @relation(fields: [locationId], references: [id])
+  author   User     @relation("Author", fields: [authorId], references: [id])
+  assignee User?    @relation("Assignee", fields: [assigneeId], references: [id])
+
+  supports Support[]
+  comments Comment[]
+  history  StatusHistory[]
+
+  @@index([status])
+  @@index([categoryId, locationId])
+}
+
+model Support {
+  id        String   @id @default(cuid())
+  userId    String
+  reportId  String
+  createdAt DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id])
+  report Report @relation(fields: [reportId], references: [id], onDelete: Cascade)
+
+  // Business rule: one support per user per report
+  @@unique([userId, reportId])
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  content   String
+  createdAt DateTime @default(now())
+  reportId  String
+  authorId  String
+
+  report Report @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  author User   @relation(fields: [authorId], references: [id])
+}
+
+model StatusHistory {
+  id         String   @id @default(cuid())
+  reportId   String
+  fromStatus Status?
+  toStatus   Status
+  note       String?
+  authorId   String
+  createdAt  DateTime @default(now())
+
+  report Report @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  author User   @relation(fields: [authorId], references: [id])
+}
