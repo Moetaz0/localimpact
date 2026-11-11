@@ -31,3 +31,27 @@ describe("requireUser", () => {
     expect(redirect).toHaveBeenCalledWith("/login");
   });
 });
+
+describe("requireRole", () => {
+  beforeEach(() => {
+    auth.mockReset();
+    redirect.mockClear();
+  });
+
+  it("allows an authorized dashboard role", async () => {
+    auth.mockResolvedValue({ user: { id: "manager-1", role: "MANAGER" } });
+    const { requireRole } = await import("./permissions");
+
+    await expect(requireRole("MANAGER", "ADMIN")).resolves.toMatchObject({
+      id: "manager-1",
+      role: "MANAGER",
+    });
+  });
+
+  it("rejects a user without the required role", async () => {
+    auth.mockResolvedValue({ user: { id: "user-1", role: "USER" } });
+    const { requireRole } = await import("./permissions");
+
+    await expect(requireRole("MANAGER", "ADMIN")).rejects.toThrow("Forbidden");
+  });
+});

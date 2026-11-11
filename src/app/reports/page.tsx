@@ -26,7 +26,7 @@ const statusLabels: Record<(typeof STATUSES)[number], string> = {
 export const instant = false;
 
 export default async function ReportsPage({ searchParams }: ReportsPageProps) {
-  await requireUser();
+  const user = await requireUser();
 
   const params = await searchParams;
   const filters = parseReportFilters(params);
@@ -61,12 +61,22 @@ export default async function ReportsPage({ searchParams }: ReportsPageProps) {
             Reports
           </h1>
         </div>
-        <Link
-          href="/reports"
-          className="rounded-full bg-blue-700 px-4 py-2 text-sm font-bold text-white"
-        >
-          Clear filters
-        </Link>
+        <div className="flex flex-wrap justify-end gap-3">
+          {user.role === "MANAGER" || user.role === "ADMIN" ? (
+            <Link
+              href="/dashboard"
+              className="rounded-full border border-slate-300 px-4 py-2 text-sm font-bold text-slate-700"
+            >
+              Dashboard
+            </Link>
+          ) : null}
+          <Link
+            href="/reports"
+            className="rounded-full bg-blue-700 px-4 py-2 text-sm font-bold text-white"
+          >
+            Clear filters
+          </Link>
+        </div>
       </header>
 
       <section className="mt-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
