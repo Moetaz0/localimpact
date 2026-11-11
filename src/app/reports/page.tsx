@@ -1,6 +1,10 @@
-import { Status } from "@prisma/client";
 import Link from "next/link";
 import { db } from "@/lib/db";
+import {
+  buildReportWhere,
+  parseReportFilters,
+  STATUSES,
+} from "@/lib/reports/filters";
 import { requireUser } from "@/server/permissions";
 
 type ReportsPageProps = {
@@ -12,21 +16,12 @@ type ReportsPageProps = {
   }>;
 };
 
-const statuses: Status[] = ["NEW", "TAKEN", "IN_PROGRESS", "RESOLVED"];
-const statusLabels: Record<Status, string> = {
+const statusLabels: Record<(typeof STATUSES)[number], string> = {
   NEW: "New",
   TAKEN: "Taken",
   IN_PROGRESS: "In progress",
   RESOLVED: "Resolved",
 };
-
-function firstValue(value: string | string[] | undefined): string {
-  return Array.isArray(value) ? value[0] ?? "" : value ?? "";
-}
-
-function parseStatus(value: string): Status | undefined {
-  return statuses.includes(value as Status) ? (value as Status) : undefined;
-}
 
 export const instant = false;
 
@@ -34,26 +29,11 @@ export default async function ReportsPage({ searchParams }: ReportsPageProps) {
   await requireUser();
 
   const params = await searchParams;
-  const search = firstValue(params.search).trim().slice(0, 100);
-  const categoryId = firstValue(params.category).trim();
-  const locationId = firstValue(params.location).trim();
-  const status = parseStatus(firstValue(params.status).trim());
+  const filters = parseReportFilters(params);
 
   const [reports, categories, locations] = await Promise.all([
     db.report.findMany({
-      where: {
-        ...(search
-          ? {
-              OR: [
-                { title: { contains: search, mode: "insensitive" } },
-                { description: { contains: search, mode: "insensitive" } },
-              ],
-            }
-          : {}),
-        ...(categoryId ? { categoryId } : {}),
-        ...(locationId ? { locationId } : {}),
-        ...(status ? { status } : {}),
-      },
+      where: buildReportWhere(filters),
       include: {
         category: { select: { name: true } },
         location: { select: { name: true } },
@@ -97,7 +77,7 @@ export default async function ReportsPage({ searchParams }: ReportsPageProps) {
             <input
               name="search"
               type="search"
-              defaultValue={search}
+              defaultValue={filters.search}
               placeholder="Search title or description"
               maxLength={100}
               className="rounded-lg border border-slate-300 px-3 py-2 font-normal"
@@ -108,7 +88,7 @@ export default async function ReportsPage({ searchParams }: ReportsPageProps) {
             Category
             <select
               name="category"
-              defaultValue={categoryId}
+              defaultValue={filters.categoryId}
               className="rounded-lg border border-slate-300 px-3 py-2 font-normal"
             >
               <option value="">All categories</option>
@@ -124,7 +104,7 @@ export default async function ReportsPage({ searchParams }: ReportsPageProps) {
             Location
             <select
               name="location"
-              defaultValue={locationId}
+              defaultValue={filters.locationId}
               className="rounded-lg border border-slate-300 px-3 py-2 font-normal"
             >
               <option value="">All locations</option>
@@ -140,11 +120,11 @@ export default async function ReportsPage({ searchParams }: ReportsPageProps) {
             Status
             <select
               name="status"
-              defaultValue={status ?? ""}
+              defaultValue={filters.status ?? ""}
               className="rounded-lg border border-slate-300 px-3 py-2 font-normal"
             >
               <option value="">All statuses</option>
-              {statuses.map((reportStatus) => (
+              {STATUSES.map((reportStatus) => (
                 <option key={reportStatus} value={reportStatus}>
                   {statusLabels[reportStatus]}
                 </option>
